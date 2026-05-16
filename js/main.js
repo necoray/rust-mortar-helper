@@ -8,9 +8,9 @@ const DEFAULT_DATA = {
   "v": "1.0",
   "degree": 2,
   "coefficients": [
-    33.21,
-    3.23,
-    -0.01
+    23.83,
+    1.92,
+    0.01
   ],
   "shots": [
     { "angle": 7.5, "distance": 39 },
