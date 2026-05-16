@@ -2,20 +2,54 @@
     const shotsContainer = document.getElementById('shots-container');
     const generateBtn = document.getElementById('generate-fields');
     const calculateBtn = document.getElementById('calculate-btn');
+    const exportBtn = document.getElementById('export-btn');
+    const importBtn = document.getElementById('import-btn');
+    const importFile = document.getElementById('import-file');
     const resultBlock = document.getElementById('result-block');
     const degreeInput = document.getElementById('degree');
     const shotsCountInput = document.getElementById('shots-count');
     const chartCanvas = document.getElementById('chart');
     const polyDisplay = document.getElementById('polynomial-display');
+    const warningModal = document.getElementById('warning-modal');
+    const modalConfirm = document.getElementById('modal-confirm');
+    const modalCancel = document.getElementById('modal-cancel');
 
-    // Стартовые поля
+    let currentCoeffs = null;
+    let currentDegree = 0;
+
     generateShotFields(parseInt(shotsCountInput.value));
 
-    generateBtn.addEventListener('click', function () {
-        generateShotFields(parseInt(shotsCountInput.value));
-    });
-
+    generateBtn.addEventListener('click', handleApply);
     calculateBtn.addEventListener('click', calculate);
+    exportBtn.addEventListener('click', exportData);
+    importBtn.addEventListener('click', () => importFile.click());
+    importFile.addEventListener('change', importData);
+    modalConfirm.addEventListener('click', confirmApply);
+    modalCancel.addEventListener('click', () => warningModal.classList.add('hidden'));
+
+    function handleApply() {
+        if (!resultBlock.classList.contains('hidden')) {
+            warningModal.classList.remove('hidden');
+        } else {
+            executeApply();
+        }
+    }
+
+    function confirmApply() {
+        warningModal.classList.add('hidden');
+        executeApply();
+    }
+
+    function executeApply() {
+        clearResults();
+        generateShotFields(parseInt(shotsCountInput.value));
+    }
+
+    function clearResults() {
+        resultBlock.classList.add('hidden');
+        currentCoeffs = null;
+        polyDisplay.textContent = '';
+    }
 
     function generateShotFields(n) {
         if (n < 2) n = 2;
@@ -57,25 +91,18 @@
             return;
         }
 
-        // Полиномиальная регрессия методом наименьших квадратов
         const coeffs = polynomialRegression(angles, distances, m);
+        currentCoeffs = coeffs;
+        currentDegree = m;
 
-        // Формируем строку многочлена
         polyDisplay.textContent = formatPolynomial(coeffs, m);
-
         resultBlock.classList.remove('hidden');
-
         drawChart(angles, distances, coeffs, m);
     }
 
-    // Решает систему (X^T X) c = X^T y для полиномиальной регрессии
     function polynomialRegression(x, y, degree) {
         const n = x.length;
         const size = degree + 1;
-
-        // Строим матрицу X^T X и вектор X^T y
-        // matrix[i][j] = sum(x[k]^(i+j))
-        // rhs[i] = sum(y[k] * x[k]^i)
         const matrix = [];
         const rhs = [];
 
@@ -98,13 +125,10 @@
             }
         }
 
-        // Гауссово исключение с выбором главного элемента
         return gaussSolve(matrix, rhs, size);
     }
 
-    // Решение СЛАУ Ax = b методом Гаусса
     function gaussSolve(matrix, rhs, size) {
-        // Расширенная матрица
         const aug = [];
         for (let i = 0; i < size; i++) {
             aug[i] = [];
@@ -114,16 +138,13 @@
             aug[i][size] = rhs[i];
         }
 
-        // Прямой ход
         for (let col = 0; col < size; col++) {
-            // Поиск строки с максимальным элементом
             let maxRow = col;
             for (let row = col + 1; row < size; row++) {
                 if (Math.abs(aug[row][col]) > Math.abs(aug[maxRow][col])) {
                     maxRow = row;
                 }
             }
-            // Перестановка
             const tmp = aug[col];
             aug[col] = aug[maxRow];
             aug[maxRow] = tmp;
@@ -138,7 +159,6 @@
             }
         }
 
-        // Обратный ход
         const solution = new Array(size).fill(0);
         for (let i = size - 1; i >= 0; i--) {
             if (Math.abs(aug[i][i]) < 1e-12) continue;
@@ -157,39 +177,26 @@
         for (let i = degree; i >= 0; i--) {
             const c = Math.round(coeffs[i] * 100) / 100;
             if (c === 0 && degree > 0) continue;
-            if (i === 0) {
-                parts.push(c.toFixed(2));
-            } else if (i === 1) {
-                parts.push(c.toFixed(2) + '·x');
-            } else {
-                parts.push(c.toFixed(2) + '·x^' + i);
-            }
+            if (i === 0) parts.push(c.toFixed(2));
+            else if (i === 1) parts.push(c.toFixed(2) + '·x');
+            else parts.push(c.toFixed(2) + '·x^' + i);
         }
         return parts.join(' + ').replace(/\+ -/g, '- ');
     }
 
-    // Отрисовка графика на Canvas
     function drawChart(dataX, dataY, coeffs, degree) {
         const canvas = chartCanvas;
         const ctx = canvas.getContext('2d');
         const W = canvas.width;
         const H = canvas.height;
-
         const pad = { left: 50, right: 20, top: 20, bottom: 40 };
         const plotW = W - pad.left - pad.right;
         const plotH = H - pad.top - pad.bottom;
 
-        const xMin = 15;
-        const xMax = 60;
-
-        // Находим min/max Y из точек и кривой
+        const xMin = 15, xMax = 60;
         let yMin = Infinity, yMax = -Infinity;
-        for (const v of dataY) {
-            if (v < yMin) yMin = v;
-            if (v > yMax) yMax = v;
-        }
+        for (const v of dataY) { if (v < yMin) yMin = v; if (v > yMax) yMax = v; }
 
-        // Оценим кривую для определения масштаба
         const steps = 100;
         const curvePoints = [];
         for (let i = 0; i <= steps; i++) {
@@ -200,93 +207,114 @@
             if (y > yMax) yMax = y;
         }
 
-        // Отступы по Y
         const yRange = yMax - yMin || 1;
-        yMin -= yRange * 0.1;
-        yMax += yRange * 0.1;
+        yMin -= yRange * 0.1; yMax += yRange * 0.1;
 
-        function toCanvasX(x) {
-            return pad.left + (x - xMin) / (xMax - xMin) * plotW;
-        }
-        function toCanvasY(y) {
-            return pad.top + plotH - (y - yMin) / (yMax - yMin) * plotH;
-        }
+        function toCanvasX(x) { return pad.left + (x - xMin) / (xMax - xMin) * plotW; }
+        function toCanvasY(y) { return pad.top + plotH - (y - yMin) / (yMax - yMin) * plotH; }
 
-        // Фон
         ctx.fillStyle = '#151515';
         ctx.fillRect(0, 0, W, H);
 
-        // Сетка
-        ctx.strokeStyle = '#2a2a2a';
-        ctx.lineWidth = 1;
+        ctx.strokeStyle = '#2a2a2a'; ctx.lineWidth = 1;
         for (let x = xMin; x <= xMax; x += 5) {
-            ctx.beginPath();
-            ctx.moveTo(toCanvasX(x), pad.top);
-            ctx.lineTo(toCanvasX(x), pad.top + plotH);
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(toCanvasX(x), pad.top); ctx.lineTo(toCanvasX(x), pad.top + plotH); ctx.stroke();
         }
         const yStep = Math.ceil((yMax - yMin) / 6 / 10) * 10;
         for (let y = Math.ceil(yMin / yStep) * yStep; y <= yMax; y += yStep) {
-            ctx.beginPath();
-            ctx.moveTo(pad.left, toCanvasY(y));
-            ctx.lineTo(pad.left + plotW, toCanvasY(y));
-            ctx.stroke();
+            ctx.beginPath(); ctx.moveTo(pad.left, toCanvasY(y)); ctx.lineTo(pad.left + plotW, toCanvasY(y)); ctx.stroke();
         }
 
-        // Подписи осей
-        ctx.fillStyle = '#666';
-        ctx.font = '11px monospace';
-        ctx.textAlign = 'center';
-        for (let x = xMin; x <= xMax; x += 10) {
-            ctx.fillText(x, toCanvasX(x), pad.top + plotH + 16);
-        }
+        ctx.fillStyle = '#666'; ctx.font = '11px monospace'; ctx.textAlign = 'center';
+        for (let x = xMin; x <= xMax; x += 10) ctx.fillText(x, toCanvasX(x), pad.top + plotH + 16);
         ctx.textAlign = 'right';
-        for (let y = Math.ceil(yMin / yStep) * yStep; y <= yMax; y += yStep) {
-            ctx.fillText(Math.round(y), pad.left - 6, toCanvasY(y) + 4);
-        }
+        for (let y = Math.ceil(yMin / yStep) * yStep; y <= yMax; y += yStep) ctx.fillText(Math.round(y), pad.left - 6, toCanvasY(y) + 4);
 
-        // Заголовки осей
-        ctx.fillStyle = '#888';
-        ctx.font = '12px sans-serif';
-        ctx.textAlign = 'center';
+        ctx.fillStyle = '#888'; ctx.font = '12px sans-serif'; ctx.textAlign = 'center';
         ctx.fillText('Угол (°)', pad.left + plotW / 2, H - 4);
-        ctx.save();
-        ctx.translate(14, pad.top + plotH / 2);
-        ctx.rotate(-Math.PI / 2);
-        ctx.fillText('Дистанция (м)', 0, 0);
-        ctx.restore();
+        ctx.save(); ctx.translate(14, pad.top + plotH / 2); ctx.rotate(-Math.PI / 2);
+        ctx.fillText('Дистанция (м)', 0, 0); ctx.restore();
 
-        // Кривая модели
-        ctx.strokeStyle = '#cc3a2a';
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = '#cc3a2a'; ctx.lineWidth = 2;
         ctx.beginPath();
         for (let i = 0; i < curvePoints.length; i++) {
-            const cx = toCanvasX(curvePoints[i].x);
-            const cy = toCanvasY(curvePoints[i].y);
-            if (i === 0) ctx.moveTo(cx, cy);
-            else ctx.lineTo(cx, cy);
+            const cx = toCanvasX(curvePoints[i].x), cy = toCanvasY(curvePoints[i].y);
+            i === 0 ? ctx.moveTo(cx, cy) : ctx.lineTo(cx, cy);
         }
         ctx.stroke();
 
-        // Точки пристрелки
         ctx.fillStyle = '#e8b830';
         for (let i = 0; i < dataX.length; i++) {
-            const cx = toCanvasX(dataX[i]);
-            const cy = toCanvasY(dataY[i]);
-            ctx.beginPath();
-            ctx.arc(cx, cy, 5, 0, Math.PI * 2);
-            ctx.fill();
-            ctx.strokeStyle = '#a88420';
-            ctx.lineWidth = 1;
-            ctx.stroke();
+            const cx = toCanvasX(dataX[i]), cy = toCanvasY(dataY[i]);
+            ctx.beginPath(); ctx.arc(cx, cy, 5, 0, Math.PI * 2); ctx.fill();
+            ctx.strokeStyle = '#a88420'; ctx.lineWidth = 1; ctx.stroke();
         }
     }
 
     function evalPoly(coeffs, x) {
         let result = 0;
-        for (let i = 0; i < coeffs.length; i++) {
-            result += coeffs[i] * Math.pow(x, i);
-        }
+        for (let i = 0; i < coeffs.length; i++) result += coeffs[i] * Math.pow(x, i);
         return result;
+    }
+
+    // Экспорт текущего состояния в JSON
+    function exportData() {
+        if (!currentCoeffs) {
+            alert('Сначала выполните расчёт');
+            return;
+        }
+        const shots = Array.from(shotsContainer.querySelectorAll('.shot-row')).map(row => ({
+            angle: parseFloat(row.querySelector('.shot-angle').value),
+            distance: parseFloat(row.querySelector('.shot-distance').value)
+        }));
+
+        const payload = {
+            version: '1.0',
+            degree: currentDegree,
+            coefficients: currentCoeffs,
+            shots: shots,
+            exportedAt: new Date().toISOString()
+        };
+
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = 'mortar_setup.json';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // Импорт из JSON файла
+    function importData(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+            try {
+                const data = JSON.parse(ev.target.result);
+                if (!data.degree || !data.coefficients || !data.shots) throw new Error('Invalid format');
+
+                degreeInput.value = data.degree;
+                generateShotFields(data.shots.length);
+                const rows = shotsContainer.querySelectorAll('.shot-row');
+                data.shots.forEach((shot, i) => {
+                    rows[i].querySelector('.shot-angle').value = shot.angle;
+                    rows[i].querySelector('.shot-distance').value = shot.distance;
+                });
+
+                currentCoeffs = data.coefficients;
+                currentDegree = data.degree;
+                polyDisplay.textContent = formatPolynomial(currentCoeffs, currentDegree);
+                resultBlock.classList.remove('hidden');
+                drawChart(data.shots.map(s => s.angle), data.shots.map(s => s.distance), currentCoeffs, currentDegree);
+            } catch (err) {
+                alert('Ошибка: неверный формат файла');
+                console.error(err);
+            }
+        };
+        reader.readAsText(file);
+        e.target.value = '';
     }
 })();

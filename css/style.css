@@ -181,3 +181,36 @@ canvas {
     color: #555;
     font-size: 13px;
 }
+
+/* Модальное окно */
+.modal {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+}
+
+.modal-content {
+    background: #222;
+    border: 1px solid #444;
+    border-left: 4px solid #cc3a2a;
+    padding: 20px;
+    max-width: 380px;
+    text-align: center;
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+}
+
+.modal-content p {
+    color: #ccc;
+    margin-bottom: 16px;
+    font-size: 14px;
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}

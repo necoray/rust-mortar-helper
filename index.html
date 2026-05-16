@@ -31,6 +31,9 @@
 
             <div class="form-group actions">
                 <button id="calculate-btn" class="btn-primary">Рассчитать</button>
+                <button id="export-btn">Экспорт</button>
+                <button id="import-btn">Импорт</button>
+                <input type="file" id="import-file" accept=".json" style="display:none;">
             </div>
 
             <div id="result-block" class="result hidden">
@@ -43,6 +46,16 @@
         <div class="panel placeholder">
             <h2>Пристрелка</h2>
             <p class="dim">Раздел в разработке...</p>
+        </div>
+    </div>
+
+    <div id="warning-modal" class="modal hidden">
+        <div class="modal-content">
+            <p>Внимание: несохранённые результаты расчёта будут утеряны.</p>
+            <div class="modal-buttons">
+                <button id="modal-confirm" class="btn-primary">Продолжить</button>
+                <button id="modal-cancel">Отмена</button>
+            </div>
         </div>
     </div>
 
