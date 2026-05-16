@@ -5,16 +5,53 @@ import { drawChart } from './chart.js';
 import { formatPolynomial } from './math.js';
 
 const DEFAULT_DATA = {
-    v: "1.0",
-    degree: 2,
-    coefficients: [33.20634920634936, 3.2285714285714167, -0.013403880070546575],
-    shots: [
-        { angle: 7.5, distance: 57 }, { angle: 7.5, distance: 56 }, { angle: 7.5, distance: 57 },
-        { angle: 30, distance: 119 }, { angle: 30, distance: 127 }, { angle: 30, distance: 108 },
-        { angle: 60, distance: 177 }, { angle: 60, distance: 169 }, { angle: 60, distance: 190 }
+    "v": "1.0",
+    "degree": 2,
+    "coefficients": [
+        46.492063492063714,
+        1.0031746031745856,
+        0.017495590828924403
     ],
-    ts: "2026-05-16T21:14:05.546Z"
-};
+    "shots": [
+        {
+            "angle": 7.5,
+            "distance": 55
+        },
+        {
+            "angle": 7.5,
+            "distance": 54
+        },
+        {
+            "angle": 7.5,
+            "distance": 56
+        },
+        {
+            "angle": 30,
+            "distance": 95
+        },
+        {
+            "angle": 30,
+            "distance": 90
+        },
+        {
+            "angle": 30,
+            "distance": 92
+        },
+        {
+            "angle": 60,
+            "distance": 160
+        },
+        {
+            "angle": 60,
+            "distance": 169
+        },
+        {
+            "angle": 60,
+            "distance": 180
+        }
+    ],
+    "ts": "2026-05-16T21:34:27.924Z"
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     mortarState.calculated = false;
