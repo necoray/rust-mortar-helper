@@ -1,6 +1,6 @@
 console.log("[Mortar] main.js загружен");
 
-(function () {
+document.addEventListener('DOMContentLoaded', function () {
     const els = {
         shotsContainer: document.getElementById('shots-container'),
         generateBtn: document.getElementById('generate-fields'),
@@ -18,8 +18,10 @@ console.log("[Mortar] main.js загружен");
         modalCancel: document.getElementById('modal-cancel')
     };
 
-    let state = { coeffs: null, degree: 0, calculated: false };
+    const state = { coeffs: null, degree: 0, calculated: false };
 
+    // Гарантируем скрытие модалки при старте
+    els.modal.classList.add('hidden');
     generateShotFields(parseInt(els.shotsCountInput.value));
 
     els.generateBtn.addEventListener('click', onApply);
@@ -27,11 +29,24 @@ console.log("[Mortar] main.js загружен");
     els.exportBtn.addEventListener('click', exportData);
     els.importBtn.addEventListener('click', () => els.importFile.click());
     els.importFile.addEventListener('change', importData);
-    els.modalConfirm.addEventListener('click', () => { hideModal(); executeApply(); });
+    els.modalConfirm.addEventListener('click', confirmApply);
     els.modalCancel.addEventListener('click', hideModal);
 
     function onApply() {
-        state.calculated && els.modal.classList.remove('hidden') || executeApply();
+        if (state.calculated) {
+            els.modal.classList.remove('hidden');
+        } else {
+            executeApply();
+        }
+    }
+
+    function confirmApply() {
+        hideModal();
+        executeApply();
+    }
+
+    function hideModal() {
+        els.modal.classList.add('hidden');
     }
 
     function executeApply() {
@@ -40,10 +55,6 @@ console.log("[Mortar] main.js загружен");
         els.resultBlock.classList.add('hidden');
         els.polyDisplay.textContent = '';
         generateShotFields(parseInt(els.shotsCountInput.value));
-    }
-
-    function hideModal() {
-        els.modal.classList.add('hidden');
     }
 
     function generateShotFields(n) {
@@ -83,7 +94,7 @@ console.log("[Mortar] main.js загружен");
 
         els.polyDisplay.textContent = formatPolynomial(state.coeffs, m);
         els.resultBlock.classList.remove('hidden');
-        drawChart(angles, distances, state.coeffs, m);
+        drawChart(angles, distances, state.coeffs);
     }
 
     function polynomialRegression(x, y, degree) {
@@ -210,4 +221,4 @@ console.log("[Mortar] main.js загружен");
         };
         r.readAsText(f); e.target.value = '';
     }
-})();
+});
