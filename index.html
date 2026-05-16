@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rust Mortar Calculator</title>
     <link rel="stylesheet" href="css/style.css">
+    <script src="js/main.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -24,16 +25,16 @@
             <div class="form-group">
                 <label for="shots-count">Количество пристрелочных выстрелов (N):</label>
                 <input type="number" id="shots-count" value="3" min="2" max="20">
-                <button id="generate-fields">Применить</button>
+                <button type="button" id="generate-fields">Применить</button>
             </div>
 
             <div id="shots-container" class="shots-grid"></div>
 
             <div class="form-group actions">
-                <button id="calculate-btn" class="btn-primary">Рассчитать</button>
-                <button id="export-btn">Экспорт</button>
-                <button id="import-btn">Импорт</button>
-                <input type="file" id="import-file" accept=".json" style="display:none;">
+                <button type="button" id="calculate-btn" class="btn-primary">Рассчитать</button>
+                <button type="button" id="export-btn">Экспорт</button>
+                <button type="button" id="import-btn">Импорт</button>
+                <input type="file" id="import-file" accept=".json" class="file-hidden">
             </div>
 
             <div id="result-block" class="result hidden">
@@ -53,12 +54,10 @@
         <div class="modal-content">
             <p>Внимание: несохранённые результаты расчёта будут утеряны.</p>
             <div class="modal-buttons">
-                <button id="modal-confirm" class="btn-primary">Продолжить</button>
-                <button id="modal-cancel">Отмена</button>
+                <button type="button" id="modal-confirm" class="btn-primary">Продолжить</button>
+                <button type="button" id="modal-cancel">Отмена</button>
             </div>
         </div>
     </div>
-
-    <script src="js/main.js"></script>
 </body>
 </html>

@@ -214,3 +214,6 @@ canvas {
     gap: 12px;
     justify-content: center;
 }
+
+.file-hidden { position: absolute; left: -9999px; opacity: 0; }
+/* остальной CSS без изменений */
