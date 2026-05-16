@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rust Mortar Calculator</title>
     <link rel="stylesheet" href="css/style.css">
-    <script src="js/main.js" defer></script>
 </head>
 <body>
     <div class="container">
@@ -14,29 +13,24 @@
             <p class="subtitle">Расчёт пристрелки миномёта</p>
         </header>
 
-        <div class="panel">
+        <div class="panel" id="analysis-panel">
             <h2>Определение характеристик</h2>
-
             <div class="form-group">
                 <label for="degree">Степень многочлена (m):</label>
                 <input type="number" id="degree" value="2" min="1" max="6">
             </div>
-
             <div class="form-group">
                 <label for="shots-count">Количество пристрелочных выстрелов (N):</label>
                 <input type="number" id="shots-count" value="3" min="2" max="20">
                 <button type="button" id="generate-fields">Применить</button>
             </div>
-
             <div id="shots-container" class="shots-grid"></div>
-
             <div class="form-group actions">
                 <button type="button" id="calculate-btn" class="btn-primary">Рассчитать</button>
                 <button type="button" id="export-btn">Экспорт</button>
                 <button type="button" id="import-btn">Импорт</button>
                 <input type="file" id="import-file" accept=".json" class="file-hidden">
             </div>
-
             <div id="result-block" class="result hidden">
                 <h3>Результат</h3>
                 <p id="polynomial-display"></p>
@@ -44,20 +38,30 @@
             </div>
         </div>
 
-        <div class="panel placeholder">
+        <div class="panel" id="aiming-panel">
             <h2>Пристрелка</h2>
-            <p class="dim">Раздел в разработке...</p>
+            <div class="form-group">
+                <label for="target-distance">Целевая дистанция (м):</label>
+                <input type="number" id="target-distance" placeholder="Например: 250" min="1">
+                <button type="button" id="aim-btn" class="btn-primary">Найти угол</button>
+            </div>
+            <div id="aim-result" class="result hidden">
+                <h3>Рекомендуемые углы</h3>
+                <ul id="aim-list"></ul>
+            </div>
         </div>
-    </div>
 
-    <div id="warning-modal" class="modal hidden">
-        <div class="modal-content">
-            <p>Внимание: несохранённые результаты расчёта будут утеряны.</p>
-            <div class="modal-buttons">
-                <button type="button" id="modal-confirm" class="btn-primary">Продолжить</button>
-                <button type="button" id="modal-cancel">Отмена</button>
+        <div id="warning-modal" class="modal hidden">
+            <div class="modal-content">
+                <p>Внимание: несохранённые результаты расчёта будут утеряны.</p>
+                <div class="modal-buttons">
+                    <button type="button" id="modal-confirm" class="btn-primary">Продолжить</button>
+                    <button type="button" id="modal-cancel">Отмена</button>
+                </div>
             </div>
         </div>
     </div>
+
+    <script type="module" src="js/main.js"></script>
 </body>
 </html>
