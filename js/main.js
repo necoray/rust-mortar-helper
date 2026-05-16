@@ -5,15 +5,33 @@ import { drawChart } from './chart.js';
 import { formatPolynomial } from './math.js';
 
 const DEFAULT_DATA = {
-    v: "1.0", degree: 2,
-    coefficients: [33.20634920634936, 3.2285714285714167, -0.013403880070546575],
-    shots: [
-        { angle: 7.5, distance: 57 }, { angle: 7.5, distance: 56 }, { angle: 7.5, distance: 57 },
-        { angle: 30, distance: 119 }, { angle: 30, distance: 127 }, { angle: 30, distance: 108 },
-        { angle: 60, distance: 177 }, { angle: 60, distance: 169 }, { angle: 60, distance: 190 }
-    ],
-    ts: "2026-05-16T21:14:05.546Z"
-};
+  "v": "1.0",
+  "degree": 2,
+  "coefficients": [
+    33.21,
+    3.23,
+    -0.01
+  ],
+  "shots": [
+    { "angle": 7.5, "distance": 39 },
+    { "angle": 7.5, "distance": 40 },
+    { "angle": 7.5, "distance": 37 },
+    { "angle": 15, "distance": 49 },
+    { "angle": 15, "distance": 50 },
+    { "angle": 30, "distance": 94 },
+    { "angle": 30, "distance": 98 },
+    { "angle": 45, "distance": 130 },
+    { "angle": 45, "distance": 132 },
+    { "angle": 45, "distance": 120 },
+    { "angle": 60, "distance": 145 },
+    { "angle": 60, "distance": 160 },
+    { "angle": 60, "distance": 140 },
+    { "angle": 67.5, "distance": 199 },
+    { "angle": 67.5, "distance": 188 },
+    { "angle": 67.5, "distance": 197 }
+  ],
+  "ts": "2026-05-17T00:00:00.000Z"
+}
 
 document.addEventListener('DOMContentLoaded', () => {
     mortarState.calculated = false;
