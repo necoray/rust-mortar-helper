@@ -38,7 +38,8 @@ document.addEventListener('DOMContentLoaded', () => {
         targetDistance: document.getElementById('target-distance'),
         aimBtn: document.getElementById('aim-btn'),
         aimResult: document.getElementById('aim-result'),
-        aimList: document.getElementById('aim-list')
+        aimList: document.getElementById('aim-list'),
+        mortarScale: document.getElementById('mortar-scale'),
     };
 
     els.modal.classList.add('hidden');
@@ -63,7 +64,7 @@ function applyDefaultData(els) {
     for (let i = 0; i < n; i++) {
         const row = document.createElement('div');
         row.className = 'shot-row';
-        row.innerHTML = `<span class="shot-label">Выстрел ${i+1}:</span><input type="number" class="shot-angle" placeholder="Угол" min="7.5" max="67.5"><span class="unit">°</span><input type="number" class="shot-distance" placeholder="Дистанция"><span class="unit">м</span>`;
+        row.innerHTML = `<span class="shot-label">Выстрел ${i + 1}:</span><input type="number" class="shot-angle" placeholder="Угол" min="7.5" max="67.5"><span class="unit">°</span><input type="number" class="shot-distance" placeholder="Дистанция"><span class="unit">м</span>`;
         els.shotsContainer.appendChild(row);
     }
 
@@ -77,5 +78,5 @@ function applyDefaultData(els) {
 
     els.polyDisplay.textContent = formatPolynomial(mortarState.coeffs, mortarState.degree);
     els.resultBlock.classList.remove('hidden');
-    drawChart(els.chartCanvas, DEFAULT_DATA.shots.map(s=>s.angle), DEFAULT_DATA.shots.map(s=>s.distance), mortarState.coeffs);
+    drawChart(els.chartCanvas, DEFAULT_DATA.shots.map(s => s.angle), DEFAULT_DATA.shots.map(s => s.distance), mortarState.coeffs);
 }
