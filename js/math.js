@@ -1,4 +1,3 @@
-// Полиномиальная регрессия методом наименьших квадратов
 export function polynomialRegression(x, y, degree) {
     const n = x.length, size = degree + 1;
     const mat = Array.from({ length: size }, () => Array(size).fill(0));
@@ -13,7 +12,6 @@ export function polynomialRegression(x, y, degree) {
     return gaussSolve(mat, rhs, size);
 }
 
-// Решение СЛАУ методом Гаусса
 function gaussSolve(mat, rhs, size) {
     const aug = mat.map((r, i) => [...r, rhs[i]]);
     for (let col = 0; col < size; col++) {
@@ -42,7 +40,6 @@ export function evalPoly(coeffs, x) {
     return r;
 }
 
-// Поиск корней уравнения f(angle) = targetDist на отрезке [min, max] методом деления пополам
 export function findAnglesForDistance(coeffs, targetDist, min = 7.5, max = 67.5) {
     const roots = [];
     const step = 0.05;
@@ -59,4 +56,14 @@ export function findAnglesForDistance(coeffs, targetDist, min = 7.5, max = 67.5)
         }
     }
     return [...new Set(roots.map(r => Math.round(r * 10) / 10))];
+}
+
+export function formatPolynomial(c, deg) {
+    const parts = [];
+    for (let i = deg; i >= 0; i--) {
+        const v = Math.round(c[i] * 100) / 100;
+        if (v === 0 && deg > 0) continue;
+        parts.push(i === 0 ? v.toFixed(2) : i === 1 ? v.toFixed(2) + '·x' : v.toFixed(2) + '·x^' + i);
+    }
+    return parts.join(' + ').replace(/\+ -/g, '- ');
 }
