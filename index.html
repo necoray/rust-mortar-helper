@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rust Mortar Calculator</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>MORTAR CALCULATOR</h1>
+            <p class="subtitle">Расчёт пристрелки миномёта</p>
+        </header>
+
+        <div class="panel">
+            <h2>Определение характеристик</h2>
+
+            <div class="form-group">
+                <label for="degree">Степень многочлена (m):</label>
+                <input type="number" id="degree" value="2" min="1" max="6">
+            </div>
+
+            <div class="form-group">
+                <label for="shots-count">Количество пристрелочных выстрелов (N):</label>
+                <input type="number" id="shots-count" value="3" min="2" max="20">
+                <button id="generate-fields">Применить</button>
+            </div>
+
+            <div id="shots-container" class="shots-grid"></div>
+
+            <div class="form-group actions">
+                <button id="calculate-btn" class="btn-primary">Рассчитать</button>
+            </div>
+
+            <div id="result-block" class="result hidden">
+                <h3>Результат</h3>
+                <p id="polynomial-display"></p>
+                <canvas id="chart" width="700" height="400"></canvas>
+            </div>
+        </div>
+
+        <div class="panel placeholder">
+            <h2>Пристрелка</h2>
+            <p class="dim">Раздел в разработке...</p>
+        </div>
+    </div>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
