@@ -8,29 +8,85 @@ const DEFAULT_DATA = {
   "v": "1.0",
   "degree": 2,
   "coefficients": [
-    23.83,
-    1.92,
-    0.01
+    23.894477317554443,
+    1.987508218277435,
+    0.003471400394477493
   ],
   "shots": [
-    { "angle": 7.5, "distance": 39 },
-    { "angle": 7.5, "distance": 40 },
-    { "angle": 7.5, "distance": 37 },
-    { "angle": 15, "distance": 49 },
-    { "angle": 15, "distance": 50 },
-    { "angle": 30, "distance": 94 },
-    { "angle": 30, "distance": 98 },
-    { "angle": 45, "distance": 130 },
-    { "angle": 45, "distance": 132 },
-    { "angle": 45, "distance": 120 },
-    { "angle": 60, "distance": 145 },
-    { "angle": 60, "distance": 160 },
-    { "angle": 60, "distance": 140 },
-    { "angle": 67.5, "distance": 199 },
-    { "angle": 67.5, "distance": 188 },
-    { "angle": 67.5, "distance": 197 }
+    {
+      "angle": 7.5,
+      "distance": 42
+    },
+    {
+      "angle": 7.5,
+      "distance": 42
+    },
+    {
+      "angle": 7.5,
+      "distance": 41
+    },
+    {
+      "angle": 15,
+      "distance": 48
+    },
+    {
+      "angle": 15,
+      "distance": 50
+    },
+    {
+      "angle": 30,
+      "distance": 84
+    },
+    {
+      "angle": 30,
+      "distance": 93
+    },
+    {
+      "angle": 45,
+      "distance": 114
+    },
+    {
+      "angle": 45,
+      "distance": 125
+    },
+    {
+      "angle": 45,
+      "distance": 128
+    },
+    {
+      "angle": 60,
+      "distance": 143
+    },
+    {
+      "angle": 60,
+      "distance": 168
+    },
+    {
+      "angle": 60,
+      "distance": 148
+    },
+    {
+      "angle": 67.5,
+      "distance": 165
+    },
+    {
+      "angle": 67.5,
+      "distance": 198
+    },
+    {
+      "angle": 67.5,
+      "distance": 162
+    },
+    {
+      "angle": 15,
+      "distance": 52
+    },
+    {
+      "angle": 30,
+      "distance": 87
+    }
   ],
-  "ts": "2026-05-17T00:00:00.000Z"
+  "ts": "2026-05-17T13:32:22.926Z"
 }
 
 document.addEventListener('DOMContentLoaded', () => {
