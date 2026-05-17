@@ -2,7 +2,7 @@ import { mortarState } from './state.js';
 import { initAnalysis, addShotRow } from './features/analysis.js';
 import { initAiming } from './features/aiming.js';
 import { drawChart } from './chart.js';
-import { formatPolynomial } from './math.js';
+import { formatPolynomial, getScatterIntervals } from './math.js';
 
 const DEFAULT_DATA = {
   "v": "1.0",
