@@ -166,18 +166,18 @@ export function getScatterIntervals(angle, angleMin = 7.5, angleMax = 67.5) {
     };
 }
 
-// В math.js, после getScatterIntervals:
-export function updateScatterUI(els, angle, distance, angleMin = 7.5, angleMax = 67.5) {
-    const { interval50, interval95 } = getScatterIntervals(angle, angleMin, angleMax);
-    els.scatter50.textContent = formatInterval(distance, interval50);
-    els.scatter95.textContent = formatInterval(distance, interval95);
-    els.scatterInfo.classList.remove('hidden');
-}
-
 // Форматирование интервала для отображения
 export function formatInterval(distance, interval) {
     const min = Math.max(0, distance - interval);
     const max = distance + interval;
     return `${Math.round(min)}–${Math.round(max)} м`;
+}
+
+
+export function updateScatterUI(els, angle, distance, angleMin = 7.5, angleMax = 67.5) {
+    const { interval50, interval95 } = getScatterIntervals(angle, angleMin, angleMax);
+    els.scatter50.textContent = formatInterval(distance, interval50);
+    els.scatter95.textContent = formatInterval(distance, interval95);
+    els.scatterInfo.classList.remove('hidden');
 }
 
