@@ -67,3 +67,81 @@ export function formatPolynomial(c, deg) {
     }
     return parts.join(' + ').replace(/\+ -/g, '- ');
 }
+
+// === Hermite spline для Unity AnimationCurve ===
+export function evaluateHermiteCurve(keys, t) {
+    // t: нормализованный параметр [0..1] по всему диапазону кривой
+    if (!keys || keys.length === 0) return 0;
+    if (keys.length === 1) return keys[0].value;
+    
+    const tStart = keys[0].time;
+    const tEnd = keys[keys.length - 1].time;
+    const totalDuration = tEnd - tStart;
+    if (totalDuration === 0) return keys[0].value;
+    
+    // Преобразуем глобальный t в абсолютное время
+    const absoluteT = tStart + t * totalDuration;
+    
+    // Находим сегмент [key[i], key[i+1]]
+    let i = 0;
+    while (i < keys.length - 1 && keys[i + 1].time < absoluteT) i++;
+    
+    const k0 = keys[i];
+    const k1 = keys[i + 1];
+    const dt = k1.time - k0.time;
+    if (dt === 0) return k0.value;
+    
+    // Локальный t внутри сегмента
+    const localT = (absoluteT - k0.time) / dt;
+    
+    // Кубический Эрмит: базисные функции
+    const t2 = localT * localT;
+    const t3 = t2 * localT;
+    const h00 = 2 * t3 - 3 * t2 + 1;
+    const h10 = t3 - 2 * t2 + localT;
+    const h01 = -2 * t3 + 3 * t2;
+    const h11 = t3 - t2;
+    
+    // Касательные масштабируются на длину интервала
+    const m0 = k0.outTangent * dt;
+    const m1 = k1.inTangent * dt;
+    
+    return h00 * k0.value + h10 * m0 + h01 * k1.value + h11 * m1;
+}
+
+// === Расчёт разброса для заданного угла ===
+export function calculateScatter(angle, angleMin = 7.5, angleMax = 67.5) {
+    // Нормализация угла в [0..1]
+    const t = (angle - angleMin) / (angleMax - angleMin);
+    const tClamped = Math.max(0, Math.min(1, t));
+    
+    // Данные кривых из сервера Rust (Unity AnimationCurve)
+    const distanceRandomnessCurve = {
+        keys: [
+            { time: 0, value: 1, inTangent: 0, outTangent: 4, weightedMode: 0, inWeight: 0, outWeight: 0 },
+            { time: 1, value: 5, inTangent: 4, outTangent: 0, weightedMode: 0, inWeight: 0, outWeight: 0 }
+        ]
+    };
+    const distanceRandomnessXCurve = {
+        keys: [
+            { time: 0, value: 1, inTangent: 0, outTangent: 2, weightedMode: 0, inWeight: 0, outWeight: 0 },
+            { time: 1, value: 3, inTangent: 2, outTangent: 0, weightedMode: 0, inWeight: 0, outWeight: 0 }
+        ]
+    };
+    const distanceRandomnessZCurve = {
+        keys: [
+            { time: 0, value: 1, inTangent: 0, outTangent: 9, weightedMode: 0, inWeight: 0, outWeight: 0 },
+            { time: 1, value: 10, inTangent: 9, outTangent: 0, weightedMode: 0, inWeight: 0, outWeight: 0 }
+        ]
+    };
+    
+    // Интерполяция значений кривых
+    const base = evaluateHermiteCurve(distanceRandomnessCurve.keys, tClamped);
+    const x = evaluateHermiteCurve(distanceRandomnessXCurve.keys, tClamped);
+    const z = evaluateHermiteCurve(distanceRandomnessZCurve.keys, tClamped);
+    
+    // Суммарный разброс: база * векторная норма компонент
+    // Это даёт приблизительный радиус области попадания
+    const spread = base * Math.sqrt(x * x + z * z);
+    return spread;
+}

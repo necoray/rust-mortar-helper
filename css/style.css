@@ -49,3 +49,11 @@ canvas { background: #151515; border: 1px solid #2a2a2a; width: 100%; display: b
 }
 .delete-shot-btn:hover { background: #883333; color: #fff; }
 #add-shot-btn { margin-top: 4px; }
+
+/* Легенда для графика */
+.chart-legend { display: flex; gap: 16px; justify-content: center; margin-top: 8px; font-size: 12px; color: #888; }
+.chart-legend span { display: flex; align-items: center; gap: 6px; }
+.chart-legend .dot { width: 12px; height: 3px; }
+.chart-legend .dot.trajectory { background: #cc3a2a; }
+.chart-legend .dot.scatter { background: rgba(70,130,200,0.6); }
+.chart-legend .dot.data { background: #e8b830; width: 8px; height: 8px; border-radius: 50%; }
