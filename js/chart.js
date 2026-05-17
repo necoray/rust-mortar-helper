@@ -9,23 +9,23 @@ export function drawChart(canvas, dataX, dataY, coeffs, xMin = 7.5, xMax = 67.5)
     // Расчёт основной кривой и границ разброса
     let yMin = Infinity, yMax = -Infinity;
     const curve = [], scatterUpper = [], scatterLower = [];
-    
+
     for (let i = 0; i <= 100; i++) {
         const x = xMin + (xMax - xMin) * i / 100;
         const y = evalPoly(coeffs, x);
         curve.push({ x, y });
-        
+
         // === Расчёт разброса (новое) ===
         const spread = calculateScatter(x, xMin, xMax);
         scatterUpper.push({ x, y: y + spread });
         scatterLower.push({ x, y: y - spread });
-        
+
         if (y < yMin) yMin = y; if (y > yMax) yMax = y;
         if (y + spread > yMax) yMax = y + spread;
         if (y - spread < yMin) yMin = y - spread;
     }
     dataY.forEach(v => { if (v < yMin) yMin = v; if (v > yMax) yMax = v; });
-    
+
     const rng = yMax - yMin || 1; yMin -= rng * 0.1; yMax += rng * 0.1;
 
     const cx = x => pad.l + (x - xMin) / (xMax - xMin) * pw;
@@ -70,6 +70,27 @@ export function drawChart(canvas, dataX, dataY, coeffs, xMin = 7.5, xMax = 67.5)
     }
     ctx.closePath();
     ctx.fill();
+
+    // === Маркеры 50% и 95% интервалов (тонкие линии) ===
+    // 50% интервал — светло-синий пунктир
+    ctx.strokeStyle = 'rgba(100, 180, 255, 0.4)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    scatterUpper.forEach((p, i) => {
+        const y50 = p.y - (p.y - curve[i].y) * (1 - 0.6745); // сужаем к центру
+        i === 0 ? ctx.moveTo(cx(p.x), cy(y50)) : ctx.lineTo(cx(p.x), cy(y50));
+    });
+    ctx.stroke();
+    ctx.beginPath();
+    scatterLower.forEach((p, i) => {
+        const y50 = p.y + (curve[i].y - p.y) * (1 - 0.6745);
+        i === 0 ? ctx.moveTo(cx(p.x), cy(y50)) : ctx.lineTo(cx(p.x), cy(y50));
+    });
+    ctx.stroke();
+
+    // Сброс штриховки для основной кривой
+    ctx.setLineDash([]);
 
     // Основная кривая (красная)
     ctx.strokeStyle = '#cc3a2a'; ctx.lineWidth = 2; ctx.beginPath();

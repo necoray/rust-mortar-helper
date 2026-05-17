@@ -1,6 +1,7 @@
 import { mortarState } from '../state.js';
 import { polynomialRegression, formatPolynomial } from '../math.js';
 import { drawChart } from '../chart.js';
+import { updateScatterUI } from '../math.js';
 
 export function initAnalysis(els) {
     els.calculateBtn.addEventListener('click', () => calculate(els));
@@ -54,6 +55,13 @@ function calculate(els) {
     els.polyDisplay.textContent = formatPolynomial(mortarState.coeffs, m);
     els.resultBlock.classList.remove('hidden');
     drawChart(els.chartCanvas, angles, distances, mortarState.coeffs);
+
+    if (angles.length > 0) {
+    // Берём последний введённый угол для оценки разброса
+    const lastAngle = angles[angles.length - 1];
+    const lastDist = distances[distances.length - 1];
+    updateScatterUI(els, lastAngle, lastDist);
+}
 }
 
 function exportData(els) {

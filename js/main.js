@@ -34,42 +34,56 @@ const DEFAULT_DATA = {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    mortarState.calculated = false;
-    mortarState.coeffs = null;
+  mortarState.calculated = false;
+  mortarState.coeffs = null;
 
-    const els = {
-        shotsContainer: document.getElementById('shots-container'),
-        calculateBtn: document.getElementById('calculate-btn'),
-        exportBtn: document.getElementById('export-btn'),
-        importBtn: document.getElementById('import-btn'),
-        importFile: document.getElementById('import-file'),
-        resultBlock: document.getElementById('result-block'),
-        degreeInput: document.getElementById('degree'),
-        chartCanvas: document.getElementById('chart'),
-        polyDisplay: document.getElementById('polynomial-display'),
-        targetDistance: document.getElementById('target-distance'),
-        aimBtn: document.getElementById('aim-btn'),
-        aimResult: document.getElementById('aim-result'),
-        aimList: document.getElementById('aim-list'),
-        mortarScale: document.getElementById('mortar-scale'),
-        addShotBtn: document.getElementById('add-shot-btn')
-    };
+  const els = {
+    shotsContainer: document.getElementById('shots-container'),
+    calculateBtn: document.getElementById('calculate-btn'),
+    exportBtn: document.getElementById('export-btn'),
+    importBtn: document.getElementById('import-btn'),
+    importFile: document.getElementById('import-file'),
+    resultBlock: document.getElementById('result-block'),
+    degreeInput: document.getElementById('degree'),
+    chartCanvas: document.getElementById('chart'),
+    polyDisplay: document.getElementById('polynomial-display'),
+    targetDistance: document.getElementById('target-distance'),
+    aimBtn: document.getElementById('aim-btn'),
+    aimResult: document.getElementById('aim-result'),
+    aimList: document.getElementById('aim-list'),
+    mortarScale: document.getElementById('mortar-scale'),
+    addShotBtn: document.getElementById('add-shot-btn'),
+    scatterInfo: document.getElementById('scatter-info'),
+    scatter50: document.getElementById('scatter-50'),
+    scatter95: document.getElementById('scatter-95'),
+  };
 
-    initAnalysis(els);
-    initAiming(els);
-    applyDefaultData(els);
+  initAnalysis(els);
+  initAiming(els);
+  applyDefaultData(els);
 });
 
+function updateScatterDisplay(els, angle, distance) {
+  const { interval50, interval95 } = getScatterIntervals(angle);
+  els.scatter50.textContent = formatInterval(distance, interval50);
+  els.scatter95.textContent = formatInterval(distance, interval95);
+  els.scatterInfo.classList.remove('hidden');
+}
+
 function applyDefaultData(els) {
-    mortarState.coeffs = DEFAULT_DATA.coefficients;
-    mortarState.degree = DEFAULT_DATA.degree;
-    mortarState.calculated = true;
+  mortarState.coeffs = DEFAULT_DATA.coefficients;
+  mortarState.degree = DEFAULT_DATA.degree;
+  mortarState.calculated = true;
 
-    els.degreeInput.value = DEFAULT_DATA.degree;
-    els.shotsContainer.innerHTML = '';
-    DEFAULT_DATA.shots.forEach(s => addShotRow(els.shotsContainer, s.angle, s.distance));
+  els.degreeInput.value = DEFAULT_DATA.degree;
+  els.shotsContainer.innerHTML = '';
+  DEFAULT_DATA.shots.forEach(s => addShotRow(els.shotsContainer, s.angle, s.distance));
 
-    els.polyDisplay.textContent = formatPolynomial(mortarState.coeffs, mortarState.degree);
-    els.resultBlock.classList.remove('hidden');
-    drawChart(els.chartCanvas, DEFAULT_DATA.shots.map(s=>s.angle), DEFAULT_DATA.shots.map(s=>s.distance), mortarState.coeffs);
+  els.polyDisplay.textContent = formatPolynomial(mortarState.coeffs, mortarState.degree);
+  els.resultBlock.classList.remove('hidden');
+  drawChart(els.chartCanvas, DEFAULT_DATA.shots.map(s => s.angle), DEFAULT_DATA.shots.map(s => s.distance), mortarState.coeffs);
+
+  const sampleAngle = DEFAULT_DATA.shots[0].angle;
+  const sampleDist = DEFAULT_DATA.shots[0].distance;
+  updateScatterDisplay(els, sampleAngle, sampleDist);
 }

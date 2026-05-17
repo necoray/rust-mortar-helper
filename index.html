@@ -34,6 +34,18 @@
             <div id="result-block" class="result hidden">
                 <h3>Результат</h3>
                 <p id="polynomial-display"></p>
+                <div id="scatter-info" class="scatter-block hidden">
+                    <h3>Разброс</h3>
+                    <div class="scatter-row">
+                        <span class="scatter-label">50% попаданий:</span>
+                        <span id="scatter-50" class="scatter-value">—</span>
+                    </div>
+                    <div class="scatter-row">
+                        <span class="scatter-label">95% попаданий:</span>
+                        <span id="scatter-95" class="scatter-value">—</span>
+                    </div>
+                    <p class="scatter-note">Интервалы указаны относительно расчётной дистанции</p>
+                </div>
                 <canvas id="chart" width="700" height="400"></canvas>
                 <div class="chart-legend">
                     <span>

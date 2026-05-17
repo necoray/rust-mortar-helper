@@ -145,3 +145,39 @@ export function calculateScatter(angle, angleMin = 7.5, angleMax = 67.5) {
     const spread = base * Math.sqrt(x * x + z * z);
     return spread;
 }
+
+// === Статистические интервалы разброса ===
+// Предполагаем нормальное распределение ошибок вокруг траектории
+// scatter — оценённое стандартное отклонение (из кривых Unity)
+
+export function getScatterIntervals(angle, angleMin = 7.5, angleMax = 67.5) {
+    const scatter = calculateScatter(angle, angleMin, angleMax);
+    
+    // Коэффициенты для нормального распределения:
+    // 50% интервал: ±0.6745σ (межквартильный диапазон)
+    // 95% интервал: ±1.96σ (стандартный доверительный интервал)
+    const K_50 = 0.6745;
+    const K_95 = 1.96;
+    
+    return {
+        scatter,           // базовый разброс (≈1σ)
+        interval50: scatter * K_50,  // половина ширины 50% интервала
+        interval95: scatter * K_95   // половина ширины 95% интервала
+    };
+}
+
+// В math.js, после getScatterIntervals:
+export function updateScatterUI(els, angle, distance, angleMin = 7.5, angleMax = 67.5) {
+    const { interval50, interval95 } = getScatterIntervals(angle, angleMin, angleMax);
+    els.scatter50.textContent = formatInterval(distance, interval50);
+    els.scatter95.textContent = formatInterval(distance, interval95);
+    els.scatterInfo.classList.remove('hidden');
+}
+
+// Форматирование интервала для отображения
+export function formatInterval(distance, interval) {
+    const min = Math.max(0, distance - interval);
+    const max = distance + interval;
+    return `${Math.round(min)}–${Math.round(max)} м`;
+}
+

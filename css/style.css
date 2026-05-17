@@ -57,3 +57,35 @@ canvas { background: #151515; border: 1px solid #2a2a2a; width: 100%; display: b
 .chart-legend .dot.trajectory { background: #cc3a2a; }
 .chart-legend .dot.scatter { background: rgba(70,130,200,0.6); }
 .chart-legend .dot.data { background: #e8b830; width: 8px; height: 8px; border-radius: 50%; }
+
+/* Блок разброса в результатах */
+.scatter-block {
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-left: 3px solid #4682b4;
+    padding: 12px 16px;
+    margin: 12px 0;
+    font-size: 13px;
+}
+.scatter-block h3 {
+    color: #4682b4;
+    font-size: 13px;
+    letter-spacing: 1px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+}
+.scatter-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 4px 0;
+    border-bottom: 1px solid #222;
+}
+.scatter-row:last-child { border-bottom: none; }
+.scatter-label { color: #999; }
+.scatter-value { color: #ccc; font-family: monospace; font-weight: 600; }
+.scatter-note {
+    color: #555;
+    font-size: 11px;
+    margin-top: 8px;
+    font-style: italic;
+}
